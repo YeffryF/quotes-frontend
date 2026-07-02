@@ -61,6 +61,9 @@ export default function App() {
   // ----------------------------------------------------------
   async function loadQuotes() {
 
+    const response = await fetch(`${API_URL}/api/quotes`)    
+    const quotesData = await response.json();
+    setQuotes([...quotesData])
   }
 
 
@@ -85,7 +88,17 @@ export default function App() {
   // ----------------------------------------------------------
   async function handleCreate(e) {
     e.preventDefault()
-
+    const response = await fetch(`${API_URL}/api/quotes`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({text, author})
+    })
+    const newQuote = await response.json()
+    setQuotes([...quotes, newQuote])
+    setText('')
+    setAuthor('')
   }
 
 
@@ -102,7 +115,12 @@ export default function App() {
   //   3. Reset the input: setDeleteId('')
   // ----------------------------------------------------------
   async function handleDelete() {
-
+    const response = await fetch(`${API_URL}/api/quotes/${deleteId}`, {
+      method: "DELETE"
+    })
+    const newQuotes = quotes.filter((quote) => quote.id !== Number(deleteId))
+    setQuotes([...newQuotes])
+    setDeleteId('')
   }
 
 
